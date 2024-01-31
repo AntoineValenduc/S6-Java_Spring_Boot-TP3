@@ -39,7 +39,7 @@ public class Film {
     @JoinColumn(name = "realisateur_id", nullable = false)
     private Realisateur realisateur;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "acteur_film",
             joinColumns = @JoinColumn(name = "film_id", referencedColumnName = "id"),

@@ -11,5 +11,10 @@ import java.util.Optional;
 @Transactional
 public interface FilmRepository extends JpaRepository <Film, Integer> {
 
+    /**
+     * Recherche un Film à partir de sa propriété 'titre'
+     * @param title String
+     * @return Film
+     */
     Optional<Film> findByTitre(String title);
 }

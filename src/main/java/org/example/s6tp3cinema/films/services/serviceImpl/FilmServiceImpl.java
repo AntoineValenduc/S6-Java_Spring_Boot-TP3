@@ -1,12 +1,6 @@
 package org.example.s6tp3cinema.films.services.serviceImpl;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import org.example.s6tp3cinema.films.dto.FilmDto;
-import org.example.s6tp3cinema.films.entities.Acteur;
-import org.example.s6tp3cinema.films.entities.Film;
-import org.example.s6tp3cinema.films.mapper.ActeurMapper;
 import org.example.s6tp3cinema.films.mapper.FilmMapper;
 import org.example.s6tp3cinema.films.repositories.FilmRepository;
 import org.example.s6tp3cinema.films.services.FilmService;
@@ -50,7 +44,6 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    @Transactional
     public void createFilm(FilmDto dto) {
         repository.saveAndFlush(mapper.toEntity(dto));
     }
