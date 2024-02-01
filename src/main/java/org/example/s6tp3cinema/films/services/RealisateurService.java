@@ -1,6 +1,8 @@
 package org.example.s6tp3cinema.films.services;
 
-import org.example.s6tp3cinema.films.dto.RealisateurDto;
+import org.example.s6tp3cinema.films.dto.films.FilmOnlyTitreAndDateSortieAndDureeDto;
+import org.example.s6tp3cinema.films.dto.realisateur.RealisateurDto;
+import org.example.s6tp3cinema.films.dto.realisateur.RealisateurDtoWithoutFilm;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,9 +11,9 @@ public interface RealisateurService {
 
     /**
      * Retourne une liste de Réalisateur DTO
-     * @return List<RealisateurDto>
+     * @return Liste RealisateurDto
      */
-    public List<RealisateurDto> getAllRealisateur();
+    public List<RealisateurDtoWithoutFilm> getAllRealisateur();
 
     /**
      * Retourne un Réalisateur Dto, à partir de son ID
@@ -19,6 +21,14 @@ public interface RealisateurService {
      * @return RealisateurDto
      */
     public Optional<RealisateurDto> getById(Integer id);
+
+    /**
+     * Retourne la liste des Films d'un Realisateur, à partir de l'ID du Realisateur
+     *
+     * @param id Integer
+     * @return FilmOnlyTitreAndDateSortieAndDureeDto
+     */
+    public Optional<List<FilmOnlyTitreAndDateSortieAndDureeDto>> getFilmsOfRealisateurById(Integer id);
 
     /**
      * Créer un nouveau Réalisateur

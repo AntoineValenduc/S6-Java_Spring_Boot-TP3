@@ -1,15 +1,17 @@
 package org.example.s6tp3cinema.films.services.serviceImpl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.transaction.Transactional;
-import org.example.s6tp3cinema.films.dto.ActeurDtoWithoutFilm;
-import org.example.s6tp3cinema.films.entities.Acteur;
+import org.example.s6tp3cinema.films.dto.acteurs.ActeurDto;
+import org.example.s6tp3cinema.films.dto.acteurs.ActeurWithoutFilmsDto;
+import org.example.s6tp3cinema.films.exceptions.ActeurCantBeNullException;
+import org.example.s6tp3cinema.films.exceptions.ActeurNotFoundException;
+import org.example.s6tp3cinema.films.mapper.ActeurMapStruct;
 import org.example.s6tp3cinema.films.repositories.ActeurRepository;
 import org.example.s6tp3cinema.films.services.ActeurService;
-import org.springframework.http.HttpStatus;
+import org.example.s6tp3cinema.films.utils.SearchNullPropertiesName;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,39 +20,108 @@ public class ActeurServiceImpl implements ActeurService {
 
     private final ActeurRepository repository;
 
-    private final ObjectMapper mapper;
+    private final SearchNullPropertiesName utils;
 
-    public ActeurServiceImpl(ActeurRepository repository, ObjectMapper mapper) {
+    public ActeurServiceImpl(ActeurRepository repository, SearchNullPropertiesName utils) {
         this.repository = repository;
-        this.mapper = mapper;
+        this.utils = utils;
     }
 
     @Override
-    public List<ActeurDtoWithoutFilm> getAllActeur() {
+    public List<ActeurWithoutFilmsDto> getAllActeur() {
         return repository.findAll()
                 .stream()
-                .map(acteur -> mapper.convertValue(acteur, ActeurDtoWithoutFilm.class))
+                .map(ActeurMapStruct.INSTANCE::toDtoReduit)
                 .toList();
     }
 
     @Override
-    public Optional<ActeurDtoWithoutFilm> getById(Integer id) {
-        return Optional.ofNullable(mapper.convertValue(repository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Film non trouvé pour l'id" + id)), ActeurDtoWithoutFilm.class));
+    public Optional<ActeurDto> getById(Integer id) {
+        return Optional.ofNullable(ActeurMapStruct.INSTANCE.toDtoComplet(repository.findById(id).orElseThrow(
+                () -> new ActeurNotFoundException(id))));
     }
 
     @Override
-    public void createActeur(ActeurDtoWithoutFilm dto) {
-        repository.saveAndFlush(mapper.convertValue(dto, Acteur.class));
+    public Optional<ActeurWithoutFilmsDto> getByIdWithoutFilm(Integer id) {
+        return Optional.ofNullable(ActeurMapStruct.INSTANCE.toDtoReduit(repository.findById(id).orElseThrow(
+                () -> new ActeurNotFoundException(id))));
     }
 
     @Override
-    public void updateActeur(ActeurDtoWithoutFilm dto) {
-        repository.saveAndFlush(mapper.convertValue(dto, Acteur.class));
+    public void createActeur(ActeurDto dto) {
+        // Vérifier si le DTO est nul
+        if(dto == null){
+            throw new ActeurCantBeNullException();
+        } else {
+            verifyDataFromRequest(dto);
+
+            //Enregistrement de l'Acteur
+            repository.saveAndFlush(ActeurMapStruct.INSTANCE.toEntityComplet(dto));
+        }
+    }
+
+    /**
+     * Vérifie les données de l'objet Acteur
+     * @param dto ActeurDto
+     */
+    private static void verifyDataFromRequest(ActeurDto dto) {
+        List<String> errors = new ArrayList<>();
+
+        if (dto.getNom() == null){
+            errors.add("nom");
+        }
+        if (dto.getPrenom() == null){
+            errors.add("prenom");
+        }
+        if (!errors.isEmpty()){
+            throw new ActeurCantBeNullException(errors);
+        }
+    }
+
+    @Override
+    public void updateActeur(ActeurDto dto) {
+        if (dto.getId() == null) {
+            // Exception si envoie d'un Acteur null
+            throw new ActeurCantBeNullException();
+        } else {
+            verifyDtoData(dto);
+        }
+    }
+
+    /**
+     * Vérifie l'existence de l'Acteur dans la bdd<br>
+     * @param dto
+     */
+    private void verifyDtoData(ActeurDto dto) {
+        // Recherche de l'Acteur existant dans la bdd, convertit en DTO
+        ActeurDto dtoExist = ActeurMapStruct.INSTANCE.toDtoComplet(repository.findById(dto.getId()).orElse(null));
+        saveActeur(dto, dtoExist);
+    }
+
+    /**
+     * Enregistre l'Acteur
+     * @param dto
+     * @param dtoExist
+     */
+    private void saveActeur(ActeurDto dto, ActeurDto dtoExist) {
+        if (dtoExist != null) {
+            // Copie des propriétés non nulles du ActeurDto vers dtoExist
+            BeanUtils.copyProperties(dto, dtoExist, utils.getNullPropertyNames(dto));
+
+            // Enregistrement de l'acteur mis à jour
+            repository.saveAndFlush(ActeurMapStruct.INSTANCE.toEntityComplet(dtoExist));
+        } else {
+            // Exception si l'Acteur n'existe pas en bdd
+            throw new ActeurNotFoundException(dto.getId());
+        }
     }
 
     @Override
     public void deleteById(Integer id) {
-        repository.deleteById(id);
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+        } else {
+            throw new ActeurNotFoundException(id);
+        }
     }
 }
