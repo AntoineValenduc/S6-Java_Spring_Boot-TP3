@@ -1,9 +1,10 @@
 package org.example.s6tp3cinema.films.controllers;
 
-import org.example.s6tp3cinema.films.dto.films.FilmOnlyTitreAndDateSortieAndDureeDto;
-import org.example.s6tp3cinema.films.dto.realisateur.RealisateurDto;
-import org.example.s6tp3cinema.films.dto.realisateur.RealisateurDtoWithoutFilm;
+import org.example.s6tp3cinema.films.dtos.films.FilmOnlyTitreAndDateSortieAndDureeDto;
+import org.example.s6tp3cinema.films.dtos.realisateur.RealisateurDto;
+import org.example.s6tp3cinema.films.dtos.realisateur.RealisateurDtoWithoutFilm;
 import org.example.s6tp3cinema.films.services.RealisateurService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -53,15 +54,21 @@ public class RealisateurController {
      * @param dto RealisateurDto
      */
     @PostMapping("/create")
+    @ResponseStatus(HttpStatus.CREATED)
     public void createRealisateur(@RequestBody RealisateurDto dto){
         service.createRealisateur(dto);
     }
 
     /**
-     * Modifie un Realisateur déjà existant
+     * Modifie un Realisateur déjà existant<br>
+     * Nécessite l'ID du Realisateur<br>
+     * Ne nécessite pas de renseigner toutes les informations du Realisateur<br>
+     * Renseigner uniquement les informations que vous souhaiter modifier<br>
+     * Trust me I'm an engineer
      * @param dto RealisateurDto
      */
     @PutMapping("/update")
+    @ResponseStatus(HttpStatus.OK)
     public void updateRealisateur(@RequestBody RealisateurDto dto){
         service.updateRealisateur(dto);
     }
@@ -71,6 +78,7 @@ public class RealisateurController {
      * @param id Integer
      */
     @DeleteMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Integer id){
         service.deleteById(id);
     }

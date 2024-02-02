@@ -47,4 +47,7 @@ public class Film {
     )
     private List<Acteur> acteurs = new ArrayList<>();
 
+    @OneToMany(mappedBy = "film")
+    private List<Seance> seances = new ArrayList<>();
+
 }

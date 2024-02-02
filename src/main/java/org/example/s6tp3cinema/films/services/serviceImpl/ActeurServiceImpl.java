@@ -1,10 +1,10 @@
 package org.example.s6tp3cinema.films.services.serviceImpl;
 
-import org.example.s6tp3cinema.films.dto.acteurs.ActeurDto;
-import org.example.s6tp3cinema.films.dto.acteurs.ActeurWithoutFilmsDto;
-import org.example.s6tp3cinema.films.exceptions.ActeurCantBeNullException;
-import org.example.s6tp3cinema.films.exceptions.ActeurNotFoundException;
-import org.example.s6tp3cinema.films.mapper.ActeurMapStruct;
+import org.example.s6tp3cinema.films.dtos.acteurs.ActeurDto;
+import org.example.s6tp3cinema.films.dtos.acteurs.ActeurWithoutFilmsDto;
+import org.example.s6tp3cinema.films.exceptions.acteur.ActeurCantBeNullException;
+import org.example.s6tp3cinema.films.exceptions.acteur.ActeurNotFoundException;
+import org.example.s6tp3cinema.films.mappers.ActeurMapStruct;
 import org.example.s6tp3cinema.films.repositories.ActeurRepository;
 import org.example.s6tp3cinema.films.services.ActeurService;
 import org.example.s6tp3cinema.films.utils.SearchNullPropertiesName;
@@ -80,6 +80,7 @@ public class ActeurServiceImpl implements ActeurService {
 
     @Override
     public void updateActeur(ActeurDto dto) {
+        //Vérifie si le dto envoi un Salle null
         if (dto.getId() == null) {
             // Exception si envoie d'un Acteur null
             throw new ActeurCantBeNullException();
@@ -94,21 +95,22 @@ public class ActeurServiceImpl implements ActeurService {
      */
     private void verifyDtoData(ActeurDto dto) {
         // Recherche de l'Acteur existant dans la bdd, convertit en DTO
-        ActeurDto dtoExist = ActeurMapStruct.INSTANCE.toDtoComplet(repository.findById(dto.getId()).orElse(null));
+        ActeurDto dtoExist = ActeurMapStruct.INSTANCE.toDtoComplet(repository.findById(dto.getId())
+                .orElseThrow(()-> new ActeurNotFoundException(dto.getId())));
         saveActeur(dto, dtoExist);
     }
 
     /**
      * Enregistre l'Acteur
-     * @param dto
-     * @param dtoExist
+     * @param dto ActeurDto request
+     * @param dtoExist ActeurDto bdd
      */
     private void saveActeur(ActeurDto dto, ActeurDto dtoExist) {
         if (dtoExist != null) {
-            // Copie des propriétés non nulles du ActeurDto vers dtoExist
+            // Copie des propriétés non nulles de ActeurDto vers dtoExist
             BeanUtils.copyProperties(dto, dtoExist, utils.getNullPropertyNames(dto));
 
-            // Enregistrement de l'acteur mis à jour
+            // Enregistrement de l'Acteur mis à jour
             repository.saveAndFlush(ActeurMapStruct.INSTANCE.toEntityComplet(dtoExist));
         } else {
             // Exception si l'Acteur n'existe pas en bdd

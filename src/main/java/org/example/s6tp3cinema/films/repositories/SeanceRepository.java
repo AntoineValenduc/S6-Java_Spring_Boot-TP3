@@ -1,24 +1,18 @@
 package org.example.s6tp3cinema.films.repositories;
 
 import jakarta.transaction.Transactional;
-import org.example.s6tp3cinema.films.entities.Film;
 import org.example.s6tp3cinema.films.entities.Seance;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 @Transactional
-public interface FilmRepository extends JpaRepository <Film, Integer> {
+public interface SeanceRepository extends JpaRepository<Seance, Integer> {
 
-    /**
-     * Recherche un Film à partir de sa propriété 'titre'
-     * @param title String
-     * @return Film
-     */
-    Optional<Film> findByTitre(String title);
+    public List<Seance> findAllByDate(LocalDate date);
 
+    public List<Seance> findAllByFilm_IdAndDateAfterAndPlaceDisponiblesNotEmpty(Integer id, LocalDate dateNow);
 }

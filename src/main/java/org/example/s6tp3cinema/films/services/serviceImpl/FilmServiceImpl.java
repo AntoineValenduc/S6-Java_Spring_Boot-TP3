@@ -1,19 +1,24 @@
 package org.example.s6tp3cinema.films.services.serviceImpl;
 
-import org.example.s6tp3cinema.films.dto.acteurs.ActeurWithoutFilmsDto;
-import org.example.s6tp3cinema.films.dto.films.FilmDto;
-import org.example.s6tp3cinema.films.dto.realisateur.RealisateurDtoWithoutFilm;
-import org.example.s6tp3cinema.films.exceptions.ActeurAlreadyAttributException;
-import org.example.s6tp3cinema.films.exceptions.FilmCantBeNullException;
-import org.example.s6tp3cinema.films.exceptions.FilmNotFoundException;
-import org.example.s6tp3cinema.films.mapper.FilmMapStruct;
+import org.example.s6tp3cinema.films.dtos.acteurs.ActeurWithoutFilmsDto;
+import org.example.s6tp3cinema.films.dtos.films.FilmDto;
+import org.example.s6tp3cinema.films.dtos.realisateur.RealisateurDtoWithoutFilm;
+import org.example.s6tp3cinema.films.dtos.seance.SeanceDto;
+import org.example.s6tp3cinema.films.dtos.seance.SeanceIdDateDto;
+import org.example.s6tp3cinema.films.dtos.seance.SeanceReduitDto;
+import org.example.s6tp3cinema.films.exceptions.acteur.ActeurAlreadyAttributException;
+import org.example.s6tp3cinema.films.exceptions.film.FilmCantBeNullException;
+import org.example.s6tp3cinema.films.exceptions.film.FilmNotFoundException;
+import org.example.s6tp3cinema.films.mappers.FilmMapStruct;
 import org.example.s6tp3cinema.films.repositories.FilmRepository;
 import org.example.s6tp3cinema.films.services.ActeurService;
 import org.example.s6tp3cinema.films.services.FilmService;
+import org.example.s6tp3cinema.films.services.SeanceService;
 import org.example.s6tp3cinema.films.utils.SearchNullPropertiesName;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,12 +31,15 @@ public class FilmServiceImpl implements FilmService {
 
     private final ActeurService acteurService;
 
+    private final SeanceService seanceService;
+
     private final SearchNullPropertiesName utils;
 
 
-    public FilmServiceImpl(FilmRepository repository, ActeurService acteurService, SearchNullPropertiesName utils) {
+    public FilmServiceImpl(FilmRepository repository, ActeurService acteurService, SeanceService seanceService, SearchNullPropertiesName utils) {
         this.repository = repository;
         this.acteurService = acteurService;
+        this.seanceService = seanceService;
         this.utils = utils;
     }
 
@@ -73,6 +81,12 @@ public class FilmServiceImpl implements FilmService {
         return getFilmById(id).orElseThrow(
                         () -> new FilmNotFoundException(id))
                 .getRealisateur();
+    }
+
+    @Override
+    public List<SeanceDto> getListSeanceByFilmId(Integer id) {
+        LocalDate dateNow = LocalDate.now();
+        return seanceService.getListSeanceFromFilmId(id, dateNow);
     }
 
     @Override

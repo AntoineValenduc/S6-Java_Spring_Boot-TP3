@@ -13,7 +13,7 @@ public class SearchNullPropertiesName {
 
     /**
      * Méthode utilitaire interne<br>
-     * Permet d'obtenir le nom des propriétés nulles
+     * Permet d'obtenir le nom des propriétés nulles et == 0
      * @param source Object
      * @return String[]
      */
@@ -25,6 +25,7 @@ public class SearchNullPropertiesName {
         for (PropertyDescriptor pd : pds) {
             Object srcValue = src.getPropertyValue(pd.getName());
             if (srcValue == null) emptyNames.add(pd.getName());
+            if (srcValue instanceof Integer && (int) srcValue == 0) emptyNames.add(pd.getName());
         }
         String[] result = new String[emptyNames.size()];
         return emptyNames.toArray(result);

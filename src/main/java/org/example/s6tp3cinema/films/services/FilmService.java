@@ -1,8 +1,10 @@
 package org.example.s6tp3cinema.films.services;
 
-import org.example.s6tp3cinema.films.dto.acteurs.ActeurWithoutFilmsDto;
-import org.example.s6tp3cinema.films.dto.films.FilmDto;
-import org.example.s6tp3cinema.films.dto.realisateur.RealisateurDtoWithoutFilm;
+import org.example.s6tp3cinema.films.dtos.acteurs.ActeurWithoutFilmsDto;
+import org.example.s6tp3cinema.films.dtos.films.FilmDto;
+import org.example.s6tp3cinema.films.dtos.realisateur.RealisateurDtoWithoutFilm;
+import org.example.s6tp3cinema.films.dtos.seance.SeanceDto;
+import org.example.s6tp3cinema.films.dtos.seance.SeanceReduitDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +46,14 @@ public interface FilmService {
     public RealisateurDtoWithoutFilm getRealisateurOfFilmById(Integer id);
 
     /**
+     * Retourne la liste des Séances, à partir d'un ID de Film<br>
+     * La séance ne doit pas être à une date antérieure
+     * @param id Integer
+     * @return Liste SeanceReduitDto
+     */
+    public List<SeanceDto> getListSeanceByFilmId(Integer id);
+
+    /**
      * Enregistre une
      * @param id Integer
      * @param dto ActeurWithoutFilmsDto
@@ -68,4 +78,6 @@ public interface FilmService {
      * @param id Integer
      */
     public void deleteById(Integer id);
+
+
 }

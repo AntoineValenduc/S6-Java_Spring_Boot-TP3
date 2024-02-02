@@ -1,8 +1,8 @@
 package org.example.s6tp3cinema.films.services;
 
-import org.example.s6tp3cinema.films.dto.films.FilmOnlyTitreAndDateSortieAndDureeDto;
-import org.example.s6tp3cinema.films.dto.realisateur.RealisateurDto;
-import org.example.s6tp3cinema.films.dto.realisateur.RealisateurDtoWithoutFilm;
+import org.example.s6tp3cinema.films.dtos.films.FilmOnlyTitreAndDateSortieAndDureeDto;
+import org.example.s6tp3cinema.films.dtos.realisateur.RealisateurDto;
+import org.example.s6tp3cinema.films.dtos.realisateur.RealisateurDtoWithoutFilm;
 
 import java.util.List;
 import java.util.Optional;

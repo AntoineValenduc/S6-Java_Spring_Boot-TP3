@@ -1,9 +1,11 @@
 package org.example.s6tp3cinema.films.controllers;
 
-import org.example.s6tp3cinema.films.dto.acteurs.ActeurWithoutFilmsDto;
-import org.example.s6tp3cinema.films.dto.realisateur.RealisateurDtoWithoutFilm;
+import org.example.s6tp3cinema.films.dtos.acteurs.ActeurWithoutFilmsDto;
+import org.example.s6tp3cinema.films.dtos.realisateur.RealisateurDtoWithoutFilm;
+import org.example.s6tp3cinema.films.dtos.seance.SeanceDto;
+import org.example.s6tp3cinema.films.dtos.seance.SeanceReduitDto;
 import org.example.s6tp3cinema.films.services.FilmService;
-import org.example.s6tp3cinema.films.dto.films.FilmDto;
+import org.example.s6tp3cinema.films.dtos.films.FilmDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,6 +72,18 @@ public class FilmController {
     }
 
     /**
+     * Retourne la liste des Séances, à partir de l'ID du Film
+     * La séance ne doit pas être à une date antérieure<br>
+     * La séance ne doit pas être complète
+     * @param id Integer
+     * @return Liste SeanceReduitDto
+     */
+    @GetMapping("/{id}/seances")
+    public List<SeanceDto> getListSeanceByFilmId(@PathVariable Integer id){
+        return service.getListSeanceByFilmId(id);
+    }
+
+    /**
      * Attribut un Acteur déjà existant, à un Film déjà existant à partir de son ID
      * @param id Integer
      * @param dto ActeurWithoutFilmsDto
@@ -91,11 +105,15 @@ public class FilmController {
     }
 
     /**
-     * Modifie un Film déjà existant
+     * Modifie un Film déjà existant<br>
+     * Nécessite l'ID du Film<br>
+     * Ne nécessite pas de renseigner toutes les informations du Film<br>
+     * Renseigner uniquement les informations que vous souhaiter modifier<br>
+     * Trust me I'm an engineer
      * @param dto
      */
     @PutMapping("/update")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     public void updateFilm(@RequestBody FilmDto dto){
         service.updateFilm(dto);
     }
@@ -105,6 +123,7 @@ public class FilmController {
      * @param id
      */
     @DeleteMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Integer id){
         service.deleteById(id);
     }

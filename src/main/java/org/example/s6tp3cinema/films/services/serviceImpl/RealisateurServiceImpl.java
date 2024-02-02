@@ -1,11 +1,11 @@
 package org.example.s6tp3cinema.films.services.serviceImpl;
 
-import org.example.s6tp3cinema.films.dto.films.FilmOnlyTitreAndDateSortieAndDureeDto;
-import org.example.s6tp3cinema.films.dto.realisateur.RealisateurDto;
-import org.example.s6tp3cinema.films.dto.realisateur.RealisateurDtoWithoutFilm;
-import org.example.s6tp3cinema.films.exceptions.RealisateurCantBeNullException;
-import org.example.s6tp3cinema.films.exceptions.RealisateurNotFoundException;
-import org.example.s6tp3cinema.films.mapper.RealisateurMapStruct;
+import org.example.s6tp3cinema.films.dtos.films.FilmOnlyTitreAndDateSortieAndDureeDto;
+import org.example.s6tp3cinema.films.dtos.realisateur.RealisateurDto;
+import org.example.s6tp3cinema.films.dtos.realisateur.RealisateurDtoWithoutFilm;
+import org.example.s6tp3cinema.films.exceptions.realisateur.RealisateurCantBeNullException;
+import org.example.s6tp3cinema.films.exceptions.realisateur.RealisateurNotFoundException;
+import org.example.s6tp3cinema.films.mappers.RealisateurMapStruct;
 import org.example.s6tp3cinema.films.repositories.RealisateurRepository;
 import org.example.s6tp3cinema.films.services.RealisateurService;
 import org.example.s6tp3cinema.films.utils.SearchNullPropertiesName;

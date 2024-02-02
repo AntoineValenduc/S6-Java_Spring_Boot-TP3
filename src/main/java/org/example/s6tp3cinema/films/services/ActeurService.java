@@ -1,7 +1,7 @@
 package org.example.s6tp3cinema.films.services;
 
-import org.example.s6tp3cinema.films.dto.acteurs.ActeurDto;
-import org.example.s6tp3cinema.films.dto.acteurs.ActeurWithoutFilmsDto;
+import org.example.s6tp3cinema.films.dtos.acteurs.ActeurDto;
+import org.example.s6tp3cinema.films.dtos.acteurs.ActeurWithoutFilmsDto;
 
 import java.util.List;
 import java.util.Optional;
